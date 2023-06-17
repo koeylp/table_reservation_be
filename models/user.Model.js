@@ -2,13 +2,20 @@ const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
 const userSchema = new Schema({
+  phone: { type: String, require: true, unique: true },
   email: { type: String, require: true },
   password: { type: String, require: true },
-  phone: { type: String, require: true },
   fullname: { type: String, require: true },
   transactionHistories: [
-    { Type: Schema.Types.ObjectId, require: true, ref: "TransactionHistory" },
+    {
+      transaction: {
+        type: Schema.Types.ObjectId,
+        require: true,
+        ref: "TransactionHistories",
+      },
+    },
   ],
+  status: { type: Number, default: 1 },
 });
 
-module.exports = mongoose.model("User", userSchema);
+module.exports = mongoose.model("Users", userSchema);
