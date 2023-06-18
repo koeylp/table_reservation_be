@@ -2,6 +2,7 @@ const _User = require("../models/user.Model");
 const { generateAccessToken } = require("../config/accessToken");
 const { comparePassword } = require("../config/hasingCode");
 const createError = require("http-errors");
+require("dotenv").config();
 
 var that = (module.exports = {
   login: async ({ phone, password }) => {
@@ -31,6 +32,19 @@ var that = (module.exports = {
         .catch((error) =>
           reject(new createError(404, "Cannot Login To System!"))
         );
+    });
+  },
+  loginStaff: async ({ phone, password }) => {
+    return new Promise(async (resolve, reject) => {
+      if (phone === process.env.PHONE && password === process.env.PASSWORD) {
+        const token = await generateAccessToken({
+          phone: phone,
+          email: password,
+        });
+        token
+          ? resolve(token)
+          : reject(new createError(404, "Cannot Login To System Token!"));
+      }
     });
   },
 });

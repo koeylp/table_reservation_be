@@ -1,4 +1,4 @@
-const { getTransactionHistory } = require("../service/user.Service");
+// const { getTransactionHistory } = require("../service/user.Service");
 var that = (module.exports = {
   /* getTransactionHistory: async (req, res, next) => {
     try {

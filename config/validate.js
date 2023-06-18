@@ -30,8 +30,17 @@ const validateTable = (data) => {
   });
   return validateSchema.validate(data);
 };
+const validateTableUpdate = (data) => {
+  const validateSchema = joi.object({
+    tableNumber: joi.number().required(),
+    capacity: joi.number().required(),
+    depositPrice: joi.number().required(),
+  });
+  return validateSchema.validate(data);
+};
 module.exports = {
   validateLogin,
   validateRegister,
   validateTable,
+  validateTableUpdate,
 };
