@@ -20,7 +20,7 @@ var that = (module.exports = {
       reject(new createError(404, "Phone is already in use!"));
     });
   },
- /*  getTransactionHistory: async ({ phone }) => {
+  /*  getTransactionHistory: async ({ phone }) => {
     return new Promise(async (resolve, reject) => {
       await _User
         .findOne({ phone })
