@@ -1,6 +1,6 @@
 const { getTransactionHistory } = require("../service/user.Service");
 var that = (module.exports = {
-  getTransactionHistory: async (req, res, next) => {
+  /* getTransactionHistory: async (req, res, next) => {
     try {
       const { phone } = req.payload;
       const listTransactionHistory = await getTransactionHistory({ phone });
@@ -13,5 +13,5 @@ var that = (module.exports = {
     } catch (error) {
       next(error);
     }
-  },
+  }, */
 });
