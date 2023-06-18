@@ -7,6 +7,7 @@ router.post("/edit", tableController.updateTable);
 router.get("/getAll", tableController.getAllTable);
 router.get("/search", tableController.searchTable);
 router.get("/:tableNumber", tableController.getTableByTableNumber);
+router.get("/getWithCapacity/:capacity", tableController.getWithCapacity);
 router.get("/:timeRange", tableController.getTableByTimeRange);
 router.get(
   "/enableDisableTable/:tableNumber",

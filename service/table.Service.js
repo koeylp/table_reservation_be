@@ -171,4 +171,20 @@ var that = (module.exports = {
         });
     });
   },
+  getWithCapacity: async ({ capacity }) => {
+    return new Promise(async (resolve, reject) => {
+      await _Table
+        .distinct("capacity")
+        .then(async (list) => {
+          const distinctCapacities = await _Table
+            .find({
+              capacity: { $in: capacity },
+            })
+            .distinct("tableNumber")
+            .exec();
+          resolve(distinctCapacities);
+        })
+        .catch((error) => reject(error));
+    });
+  },
 });

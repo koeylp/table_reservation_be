@@ -7,8 +7,8 @@ const reservationSchema = new Schema({
     { table: { type: Schema.Types.ObjectId, require: true, ref: "Tables" } },
   ],
   depositAmount: { type: mongoose.Types.Decimal128, require: true },
-  arrivalTime: { type: Date, require: true },
-  isCancelled: { type: Boolean, require: true },
+  arrivalTime: { type: String, require: true },
+  isCancelled: { type: Boolean, require: true, default: "false" },
 });
 
 module.exports = mongoose.model("Reservations", reservationSchema);
