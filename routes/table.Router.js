@@ -3,8 +3,18 @@ const router = express.Router();
 const tableController = require("../controller/table.Controller");
 
 router.post("/add", tableController.addTable);
+router.post("/edit", tableController.updateTable);
 router.get("/getAll", tableController.getAllTable);
 router.get("/search", tableController.searchTable);
 router.get("/:tableNumber", tableController.getTableByTableNumber);
+router.get("/:timeRange", tableController.getTableByTimeRange);
+router.get(
+  "/enableDisableTable/:tableNumber",
+  tableController.enableDisableTable
+);
+router.get(
+  "/availableNotAvailable/:tableNumber",
+  tableController.availableNotAvailable
+);
 
 module.exports = router;

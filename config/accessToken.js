@@ -10,7 +10,7 @@ const generateAccessToken = async ({ phone, email }) => {
     };
     const SECRET_KEY = process.env.SECRET_KEY;
     const options = {
-      expiresIn: "1h",
+      expiresIn: "1y",
       algorithm: "HS256",
     };
     JWT.sign(payload, SECRET_KEY, options, (err, token) => {
