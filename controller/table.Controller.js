@@ -113,11 +113,11 @@ var that = (module.exports = {
     try {
       const { tableNumber } = req.params;
       if (tableNumber) {
-        const updateTable = await enableDisableTable({ tableNumber });
-        if (updateTable) {
+        const updatedTables = await enableDisableTable({ tableNumber });
+        if (updatedTables) {
           return res.status(200).json({
             message: "Update Process!",
-            data: updateTable,
+            data: updatedTables,
           });
         }
       }
