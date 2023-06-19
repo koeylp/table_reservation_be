@@ -1,14 +1,95 @@
 const express = require("express");
 const paymentService = require("../service/payment.Service");
 const router = express.Router();
+const paypal = require("paypal-rest-sdk");
 
-// Route for initiating a payment
-router.post("/", paymentService.initiatePayment);
+// Configure PayPal SDK
+paypal.configure({
+  mode: "sandbox", // or 'live' for production
+  client_id: process.env.PAYPAL_CLIENT_ID,
+  client_secret: process.env.PAYPAL_SECRET_KEY,
+});
 
-// Route for handling payment success callback
-router.get("/success", paymentService.handlePaymentSuccess);
+var that = (module.exports = {
+  initiatePayment: async (req, res) => {
+    const { amount, currency, itemName } = req.body;
 
-// Route for handling payment failure callback
-router.get("/failure", paymentService.handlePaymentFailure);
+    const paymentData = {
+      intent: "sale",
+      payer: {
+        payment_method: "paypal",
+      },
+      redirect_urls: {
+        return_url: "http://localhost:7070/payment/success",
+        cancel_url: "http://localhost:3000/payment/cancel",
+      },
+      transactions: [
+        {
+          item_list: {
+            items: [
+              {
+                name: itemName,
+                price: amount,
+                currency: currency,
+                quantity: 1,
+              },
+            ],
+          },
+          amount: {
+            currency: currency,
+            total: amount,
+          },
+          description: "Payment description",
+        },
+      ],
+    };
 
-module.exports = router;
+    // Use the PayPal SDK to create the payment
+    paypal.payment.create(paymentData, (error, payment) => {
+      if (error) {
+        console.error("Error creating PayPal payment:", error);
+        res.status(500).json({ error: "Failed to initiate payment" });
+      } else {
+        // Extract the approval URL from the payment response
+        const approvalUrl = payment.links.find(
+          (link) => link.rel === "approval_url"
+        ).href;
+        res.json({ approvalUrl });
+        console.log(approvalUrl);
+      }
+    });
+  },
+  handlePaymentSuccess: async (req, res) => {
+    const payerId = req.query.PayerID;
+    const paymentId = req.query.paymentId;
+  
+    const execute_payment_json = {
+      payer_id: payerId,
+      transactions: [
+        {
+          amount: {
+            currency: "USD",
+            total: "10.00",
+          },
+        },
+      ],
+    };
+  
+    paypal.payment.execute(
+      paymentId,
+      execute_payment_json,
+      function (error, payment) {
+        if (error) {
+          console.log(error.response);
+          throw error;
+        } else {
+          console.log(JSON.stringify(payment));
+          res.send("Success");
+        }
+      }
+    );
+  }
+});
+
+
+// router.get("/failure", paymentService.handlePaymentFailure);
