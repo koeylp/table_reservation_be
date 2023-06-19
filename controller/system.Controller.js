@@ -30,7 +30,6 @@ var that = (module.exports = {
       const { error } = validateRegister(req.body);
       if (error) throw createError(error.details[0].message);
       const { phone, email, password, confirmPassword, fullName } = req.body;
-      console.log("fullName", fullName);
       if (password != confirmPassword)
         throw createError("Conflict With Confirm Password!");
       const user = await addUser({

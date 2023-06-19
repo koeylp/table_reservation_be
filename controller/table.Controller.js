@@ -49,7 +49,7 @@ var that = (module.exports = {
   },
   searchTable: async (req, res, next) => {
     try {
-      const { capacity, timeRangeType } = req.query;
+      const { capacity, timeRangeType } = req.body;
       const listTableAvailable = await searchTable({ capacity, timeRangeType });
       if (listTableAvailable) {
         return res.status(200).json({

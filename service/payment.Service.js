@@ -9,19 +9,7 @@ paypal.configure({
 
 var that = (module.exports = {
   initiatePayment: async (paymentData) => {
-    paypal.payment.create(paymentData, (error, payment) => {
-      if (error) {
-        console.error("Error creating PayPal payment:", error);
-        res.status(500).json({ error: "Failed to initiate payment" });
-      } else {
-        // Extract the approval URL from the payment response
-        const approvalUrl = payment.links.find(
-          (link) => link.rel === "approval_url"
-        ).href;
-        res.json({ approvalUrl });
-        console.log(approvalUrl);
-      }
-    });
+    
   },
 });
 
