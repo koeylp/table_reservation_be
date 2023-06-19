@@ -26,7 +26,6 @@ const validateTable = (data) => {
     tableNumber: joi.number().required(),
     capacity: joi.number().required(),
     depositPrice: joi.number().required(),
-    timeRangeType: joi.string().required(),
   });
   return validateSchema.validate(data);
 };
