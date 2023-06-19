@@ -66,6 +66,8 @@ var that = (module.exports = {
           },
           {
             tableNumber: 1,
+            capacity: 1,
+            depositPrice: 1,
             timeRangeType: 1,
             isAvailable: 1,
             _id: 0,
