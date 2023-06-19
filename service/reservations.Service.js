@@ -1,43 +1,48 @@
-const Tables = require("./models/Tables");
-const Reservations = require("./models/Reservations");
-const Users = require("./models/Users");
-
-async function getTablesData() {
-  try {
-    const tables = await Tables.find().lean();
-    const populatedTables = await Promise.all(
-      tables.map(async (table) => {
-        const reservations = await Reservations.find({
-          "tables.table": table._id,
+const _Table = require("../models/table.Model");
+const _Reservation = require("../models/reservation.Model");
+const createError = require("http-errors");
+var that = (module.exports = {
+  addReservation: async ({ customerId, tables, arrivalTime }) => {
+    return new Promise(async (resolve, reject) => {
+      var depositPrice = 0;
+      for (const { table } of tables) {
+        await _Table
+          .findOne({
+            _id: table,
+          })
+          .then((table) => (depositPrice = depositPrice + +table.depositPrice));
+      }
+      await _Reservation
+        .create({
+          customer: customerId,
+          tables: tables,
+          depositAmount: depositPrice,
+          arrivalTime: arrivalTime,
         })
-          .populate("customer", "fullname")
-          .lean();
-
-        table.reservations = reservations.map((reservation) => ({
-          time: reservation.arrivalTime.toLocaleTimeString("en-US", {
-            hour: "numeric",
-            minute: "numeric",
-          }),
-          customer: reservation.customer.fullname,
-        }));
-
-        return table;
-      })
-    );
-
-    const formattedTables = populatedTables.map((table) => ({
-      id: table._id,
-      name: `Table ${table.tableNumber}`,
-      seats: table.capacity,
-      description: `description ${table.tableNumber}`,
-      reservations: table.reservations,
-    }));
-
-    console.log(formattedTables);
-    return formattedTables;
-  } catch (error) {
-    console.error(error);
-  }
-}
-
-getTablesData();
+        .then((reservation) => resolve(reservation))
+        .catch((error) =>
+          reject(new createError(404, "Cannot Make Reservation"))
+        );
+    });
+  },
+  getAllReservation: async () => {
+    return new Promise(async (resolve, reject) => {
+      await _Reservation
+        .find()
+        .populate("customer", {
+          phone: 1,
+          fullName: 1,
+          _id: 0,
+        })
+        .populate("tables.table", {
+          tableNumber: 1,
+          capacity: 1,
+          timeRangeType: 1,
+          _id: 0,
+        })
+        .exec()
+        .then((reservation) => resolve(reservation))
+        .catch((error) => reject(new createError(404, error)));
+    });
+  },
+});

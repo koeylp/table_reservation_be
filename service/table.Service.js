@@ -171,4 +171,31 @@ var that = (module.exports = {
         });
     });
   },
+  getWithCapacity: async ({ capacity }) => {
+    return new Promise(async (resolve, reject) => {
+      await _Table
+        .find({
+          capacity: capacity,
+        })
+        .distinct("tableNumber")
+        .then(async (lists) => {
+          var distinctCapacities = [];
+          for (var list of lists) {
+            const table = await _Table.findOne(
+              {
+                tableNumber: list,
+              },
+              {
+                tableNumber: 1,
+                capacity: 1,
+                _id: 0,
+              }
+            );
+            distinctCapacities.push(table);
+          }
+          resolve(distinctCapacities);
+        })
+        .catch((error) => reject(error));
+    });
+  },
 });

@@ -21,6 +21,7 @@ var that = (module.exports = {
             const token = await generateAccessToken({
               phone: userForLogin.phone,
               email: userForLogin.email,
+              customerId: userForLogin._id,
             });
             token
               ? resolve(token)
