@@ -43,38 +43,24 @@ var that = (module.exports = {
         },
       ],
     };
-
-    // Use the PayPal SDK to create the payment
-    paypal.payment.create(paymentData, (error, payment) => {
-      if (error) {
-        console.error("Error creating PayPal payment:", error);
-        res.status(500).json({ error: "Failed to initiate payment" });
-      } else {
-        // Extract the approval URL from the payment response
-        const approvalUrl = payment.links.find(
-          (link) => link.rel === "approval_url"
-        ).href;
-        res.json({ approvalUrl });
-        console.log(approvalUrl);
-      }
-    });
+    paymentService.initiatePayment(paymentData);
   },
   handlePaymentSuccess: async (req, res) => {
     const payerId = req.query.PayerID;
     const paymentId = req.query.paymentId;
-  
+
     const execute_payment_json = {
       payer_id: payerId,
       transactions: [
         {
           amount: {
             currency: "USD",
-            total: "10.00",
+            total: amount,
           },
         },
       ],
     };
-  
+
     paypal.payment.execute(
       paymentId,
       execute_payment_json,
@@ -88,8 +74,7 @@ var that = (module.exports = {
         }
       }
     );
-  }
+  },
 });
-
 
 // router.get("/failure", paymentService.handlePaymentFailure);

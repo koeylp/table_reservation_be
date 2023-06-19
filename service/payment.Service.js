@@ -8,48 +8,18 @@ paypal.configure({
 });
 
 var that = (module.exports = {
-  initiatePayment: async ({ amount, itemName }) => {
-    console.log("this is paypal");
-    const create_payment_json = {
-      intent: "sale",
-      payer: {
-        payment_method: "paypal",
-      },
-      redirect_urls: {
-        return_url: "http://localhost:3000/success",
-        cancel_url: "http://localhost:3000/cancel",
-      },
-      transactions: [
-        {
-          item_list: {
-            items: [
-              {
-                name: itemName,
-                sku: "001",
-                price: amount,
-                currency: "USD",
-                quantity: 1,
-              },
-            ],
-          },
-          amount: {
-            currency: "USD",
-            total: amount,
-          },
-          description: "Hat for the best team ever",
-        },
-      ],
-    };
-
-    paypal.payment.create(create_payment_json, function (error, payment) {
+  initiatePayment: async (paymentData) => {
+    paypal.payment.create(paymentData, (error, payment) => {
       if (error) {
-        throw error;
+        console.error("Error creating PayPal payment:", error);
+        res.status(500).json({ error: "Failed to initiate payment" });
       } else {
-        for (let i = 0; i < payment.links.length; i++) {
-          if (payment.links[i].rel === "approval_url") {
-            res.redirect(payment.links[i].href);
-          }
-        }
+        // Extract the approval URL from the payment response
+        const approvalUrl = payment.links.find(
+          (link) => link.rel === "approval_url"
+        ).href;
+        res.json({ approvalUrl });
+        console.log(approvalUrl);
       }
     });
   },
