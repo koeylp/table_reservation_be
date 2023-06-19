@@ -43,7 +43,19 @@ var that = (module.exports = {
         },
       ],
     };
-    paymentService.initiatePayment(paymentData);
+    paypal.payment.create(paymentData, (error, payment) => {
+      if (error) {
+        console.error("Error creating PayPal payment:", error);
+        res.status(500).json({ error: "Failed to initiate payment" });
+      } else {
+        // Extract the approval URL from the payment response
+        const approvalUrl = payment.links.find(
+          (link) => link.rel === "approval_url"
+        ).href;
+        res.json({ approvalUrl });
+        console.log(approvalUrl);
+      }
+    });
   },
   handlePaymentSuccess: async (req, res) => {
     const payerId = req.query.PayerID;
@@ -55,7 +67,7 @@ var that = (module.exports = {
         {
           amount: {
             currency: "USD",
-            total: amount,
+            total: 10.0,
           },
         },
       ],

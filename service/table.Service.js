@@ -42,12 +42,12 @@ var that = (module.exports = {
         .catch((error) => reject(new createError(404, "Empty List!")));
     });
   },
-  searchTable: async ({ capacity = 4, timeRangeType = "6h" }) => {
+  searchTable: async ({ capacityModel, timeRangeTypeModel }) => {
     return new Promise(async (resolve, reject) => {
       await _Table
         .find({
-          capacity,
-          timeRangeType,
+          capacity: capacityModel,
+          timeRangeType: timeRangeTypeModel,
           isAvailable: true,
           status: 1,
         })
