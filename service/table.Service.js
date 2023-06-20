@@ -42,19 +42,56 @@ var that = (module.exports = {
         .catch((error) => reject(new createError(404, "Empty List!")));
     });
   },
-  searchTable: async ({ capacity = 4, timeRangeType = "6h" }) => {
+  searchTable: async ({ capacity, timeRangeType }) => {
     return new Promise(async (resolve, reject) => {
-      await _Table
-        .find({
-          capacity,
-          timeRangeType,
-          isAvailable: true,
-          status: 1,
-        })
-        .then((listTableAvailable) => resolve(listTableAvailable))
-        .catch((error) =>
-          reject(new createError(404, "Cannot Find Table Available!"))
-        );
+      const f = typeof capacity
+      console.log( f + " + " + timeRangeType);
+      
+      if (typeof capacity === "undefined" && typeof timeRangeType !== "undefined") {
+        await _Table
+          .find({
+            timeRangeType: timeRangeType,
+            isAvailable: true,
+            status: 1,
+          })
+          .then((listTableAvailable) => resolve(listTableAvailable))
+          .catch((error) =>
+            reject(new createError(404, "Cannot Find Table Available!"))
+          );
+      } else if (typeof timeRangeType === "undefined" && typeof capacity !== "undefined") {
+        await _Table
+          .find({
+            capacity: capacity,
+            isAvailable: true,
+            status: 1,
+          })
+          .then((listTableAvailable) => resolve(listTableAvailable))
+          .catch((error) =>
+            reject(new createError(404, "Cannot Find Table Available!"))
+          );
+      } else if (typeof capacity === "undefined" && typeof timeRangeType === "undefined") {
+        await _Table
+          .find({
+            isAvailable: true,
+            status: 1,
+          })
+          .then((listTableAvailable) => resolve(listTableAvailable))
+          .catch((error) =>
+            reject(new createError(404, "Cannot Find Table Available!"))
+          );
+      } else {
+        await _Table
+          .find({
+            capacity: capacity,
+            timeRangeType: timeRangeType,
+            isAvailable: true,
+            status: 1,
+          })
+          .then((listTableAvailable) => resolve(listTableAvailable))
+          .catch((error) =>
+            reject(new createError(404, "Cannot Find Table Available!"))
+          );
+      }
     });
   },
   getTableByTableNumber: async ({ tableNumber }) => {

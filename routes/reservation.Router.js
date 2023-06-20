@@ -1,13 +1,25 @@
 const express = require("express");
 const router = express.Router();
 const reservationController = require("../controller/reservation.Controller");
-const { verifyAccessToken } = require("../config/accessToken");
+const {
+  verifyAccessToken,
+  verifyAccessTokenFromCookie,
+} = require("../config/accessToken");
 
-router.post("/add", verifyAccessToken, reservationController.addReservaion);
+router.post(
+  "/add",
+  verifyAccessTokenFromCookie,
+  reservationController.addReservaion
+);
 router.get(
   "/getAll",
-  verifyAccessToken,
+  verifyAccessTokenFromCookie,
   reservationController.getAllReservation
+);
+router.get(
+  "/",
+  verifyAccessTokenFromCookie,
+  reservationController.getReservationByUser
 );
 
 module.exports = router;

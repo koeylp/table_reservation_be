@@ -2,12 +2,13 @@ const JWT = require("jsonwebtoken");
 const createError = require("http-errors");
 require("dotenv").config();
 
-const generateAccessToken = async ({ phone, email, customerId }) => {
+const generateAccessToken = async ({ phone, email, customerId, fullName }) => {
   return new Promise(async (resolve, reject) => {
     const payload = {
       phone,
       email,
       customerId,
+      fullName,
     };
     const SECRET_KEY = process.env.SECRET_KEY;
     const options = {
@@ -39,17 +40,17 @@ const verifyAccessToken = (req, res, next) => {
     next();
   });
 };
-const verifyAccessTokenFromCookie = (token) => {
-  return new Promise(async (resolve, reject) => {
-    JWT.verify(token, process.env.SECRET_KEY, (err, payload) => {
-      if (err) {
-        if (err.name === "JsonWebTokenError") {
-          return reject(createError.Unauthorized());
-        }
-        return reject(createError.Unauthorized(err.message));
+const verifyAccessTokenFromCookie = (req, res, next) => {
+  const { token } = req.cookies;
+  JWT.verify(token, process.env.SECRET_KEY, (err, payload) => {
+    if (err) {
+      if (err.name === "JsonWebTokenError") {
+        return reject(createError.Unauthorized());
       }
-      resolve(payload);
-    });
+      return reject(createError.Unauthorized(err.message));
+    }
+    req.payload = payload;
+    next();
   });
 };
 module.exports = {

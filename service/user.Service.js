@@ -7,6 +7,12 @@ var that = (module.exports = {
       const userCheck = await _User.findOne({
         phone: phone,
       });
+      const mailCheck = await _User.findOne({
+        email: email,
+      });
+      if (mailCheck) {
+        reject(new createError(404, "Email is already in use!"));
+      }
       if (!userCheck) {
         const hasingPassword = await hashPassword(password);
         const user = await _User.create({
@@ -20,17 +26,14 @@ var that = (module.exports = {
       reject(new createError(404, "Phone is already in use!"));
     });
   },
- /*  getTransactionHistory: async ({ phone }) => {
+  getUserByPhone: async ({ phone }) => {
     return new Promise(async (resolve, reject) => {
       await _User
         .findOne({ phone })
-        .then((user) => {
-          const listTransactionHistory = user.transactionHistories;
-          resolve(listTransactionHistory);
-        })
-        .catch((error) => {
-          reject(new createError(404, "You Dont Have Any Reservation!"));
-        });
+        .then((user) => resolve(user))
+        .catch((error) =>
+          reject(new createError(404, `Not Found User With ${phone}`))
+        );
     });
-  }, */
+  },
 });
