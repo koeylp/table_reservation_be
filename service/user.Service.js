@@ -26,4 +26,14 @@ var that = (module.exports = {
       reject(new createError(404, "Phone is already in use!"));
     });
   },
+  getUserByPhone: async ({ phone }) => {
+    return new Promise(async (resolve, reject) => {
+      await _User
+        .findOne({ phone })
+        .then((user) => resolve(phone))
+        .catch((error) =>
+          reject(new createError(404, `Not Found User With ${phone}`))
+        );
+    });
+  },
 });
