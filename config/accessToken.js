@@ -2,12 +2,13 @@ const JWT = require("jsonwebtoken");
 const createError = require("http-errors");
 require("dotenv").config();
 
-const generateAccessToken = async ({ phone, email, customerId }) => {
+const generateAccessToken = async ({ phone, email, customerId, fullName }) => {
   return new Promise(async (resolve, reject) => {
     const payload = {
       phone,
       email,
       customerId,
+      fullName,
     };
     const SECRET_KEY = process.env.SECRET_KEY;
     const options = {

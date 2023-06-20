@@ -22,6 +22,7 @@ var that = (module.exports = {
               phone: userForLogin.phone,
               email: userForLogin.email,
               customerId: userForLogin._id,
+              fullName: userForLogin.fullName,
             });
             token
               ? resolve(token)

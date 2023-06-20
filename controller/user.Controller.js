@@ -16,4 +16,16 @@ var that = (module.exports = {
       next(error);
     }
   },
+  getUser: async (req, res, next) => {
+    try {
+      const { phone, email, customerId } = req.payload;
+      return res.status(200).json({
+        phone: phone,
+        email: email,
+        customerId: customerId,
+      });
+    } catch (error) {
+      next(error);
+    }
+  },
 });
