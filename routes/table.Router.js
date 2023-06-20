@@ -9,7 +9,7 @@ router.get("/search", tableController.searchTable);
 router.get("/:tableNumber", tableController.getTableByTableNumber);
 router.get("/getWithCapacity/:capacity", tableController.getWithCapacity);
 router.get("/:timeRange", tableController.getTableByTimeRange);
-router.get(
+router.delete(
   "/enableDisableTable/:tableNumber",
   tableController.enableDisableTable
 );
