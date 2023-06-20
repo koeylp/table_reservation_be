@@ -5,8 +5,7 @@ const {
   verifyAccessToken,
   verifyAccessTokenFromCookie,
 } = require("../config/accessToken");
-
-router.get("/:phone", userController.getUserByPhone);
 router.get("/userInfor", verifyAccessTokenFromCookie, userController.getUser);
+router.get("/:phone", userController.getUserByPhone);
 
 module.exports = router;

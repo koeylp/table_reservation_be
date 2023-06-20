@@ -6,12 +6,20 @@ const {
   verifyAccessTokenFromCookie,
 } = require("../config/accessToken");
 
-router.post("/add", verifyAccessToken, reservationController.addReservaion);
+router.post(
+  "/add",
+  verifyAccessTokenFromCookie,
+  reservationController.addReservaion
+);
 router.get(
   "/getAll",
-  verifyAccessToken,
+  verifyAccessTokenFromCookie,
   reservationController.getAllReservation
 );
-router.get("/", verifyAccessToken, reservationController.getReservationByUser);
+router.get(
+  "/",
+  verifyAccessTokenFromCookie,
+  reservationController.getReservationByUser
+);
 
 module.exports = router;

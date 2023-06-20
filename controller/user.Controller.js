@@ -18,11 +18,12 @@ var that = (module.exports = {
   },
   getUser: async (req, res, next) => {
     try {
-      const { phone, email, customerId } = req.payload;
+      const { phone, email, customerId, fullName } = req.payload;
       return res.status(200).json({
         phone: phone,
         email: email,
         customerId: customerId,
+        fullName: fullName,
       });
     } catch (error) {
       next(error);
