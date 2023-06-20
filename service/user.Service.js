@@ -30,7 +30,7 @@ var that = (module.exports = {
     return new Promise(async (resolve, reject) => {
       await _User
         .findOne({ phone })
-        .then((user) => resolve(phone))
+        .then((user) => resolve(user))
         .catch((error) =>
           reject(new createError(404, `Not Found User With ${phone}`))
         );
