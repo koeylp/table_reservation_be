@@ -95,7 +95,7 @@ var that = (module.exports = {
     return new Promise(async (resolve, reject) => {
       await _Table
         .find(
-          {
+          { 
             tableNumber: tableNumber,
           },
           {

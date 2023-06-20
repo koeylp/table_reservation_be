@@ -1,6 +1,4 @@
 const express = require("express");
-const paymentService = require("../service/payment.Service");
-const router = express.Router();
 const paypal = require("paypal-rest-sdk");
 
 // Configure PayPal SDK
@@ -10,10 +8,12 @@ paypal.configure({
   client_secret: process.env.PAYPAL_SECRET_KEY,
 });
 
+let total = 0;
+
 var that = (module.exports = {
   initiatePayment: async (req, res) => {
     const { amount, currency, itemName } = req.body;
-
+    total = amount;
     const paymentData = {
       intent: "sale",
       payer: {
@@ -21,7 +21,7 @@ var that = (module.exports = {
       },
       redirect_urls: {
         return_url: "http://localhost:7070/payment/success",
-        cancel_url: "http://localhost:3000/payment/cancel",
+        cancel_url: "http://localhost:5173/",
       },
       transactions: [
         {
@@ -67,7 +67,7 @@ var that = (module.exports = {
         {
           amount: {
             currency: "USD",
-            total: 10.0,
+            total: total,
           },
         },
       ],
