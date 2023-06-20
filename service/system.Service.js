@@ -13,6 +13,9 @@ var that = (module.exports = {
           status: 1,
         })
         .then(async (userForLogin) => {
+          if (userForLogin == null) {
+            reject(new createError(404, "Cannot Login To System!"));
+          }
           const isvaLid = await comparePassword({
             password,
             hashpassword: userForLogin.password,
@@ -22,6 +25,7 @@ var that = (module.exports = {
               phone: userForLogin.phone,
               email: userForLogin.email,
               customerId: userForLogin._id,
+              fullName: userForLogin.fullName,
             });
             token
               ? resolve(token)
@@ -40,11 +44,15 @@ var that = (module.exports = {
       if (phone === process.env.PHONE && password === process.env.PASSWORD) {
         const token = await generateAccessToken({
           phone: phone,
-          email: password,
+          email: "DATHANGNHANH@GMAIL.COM",
+          customerId: password,
+          fullName: "STAFF_RESERVATION",
         });
         token
           ? resolve(token)
           : reject(new createError(404, "Cannot Login To System Token!"));
+      } else {
+        reject(new createError(404, "Cannot Login To System Token!"));
       }
     });
   },
