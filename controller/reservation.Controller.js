@@ -10,6 +10,7 @@ var that = (module.exports = {
       const { customerId } = req.payload;
       const { tables, arrivalTime } = req.body;
       if (customerId && tables && arrivalTime) {
+        console.log(tables);
         const reservation = await addReservation({
           customerId,
           tables,

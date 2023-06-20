@@ -1,17 +1,28 @@
 const _Table = require("../models/table.Model");
 const _Reservation = require("../models/reservation.Model");
 const createError = require("http-errors");
+
+function getCosts(value) {
+  if (typeof value !== "undefined") {
+    return parseFloat(value.toString());
+  }
+  return value;
+}
+
 var that = (module.exports = {
   addReservation: async ({ customerId, tables, arrivalTime }) => {
     return new Promise(async (resolve, reject) => {
-      var depositPrice = 0;
-      for (const { table } of tables) {
-        await _Table
-          .findOne({
-            _id: table,
-          })
-          .then((table) => (depositPrice = depositPrice + +table.depositPrice));
-      }
+      var depositPrice = tables[0].depositAmount.$numberDecimal;
+      console.log(tables[0].depositAmount.$numberDecimal);
+      // for (let { table } of tables) {
+      //   await _Table
+      //     .findOne({
+      //       _id: table._id,
+      //     })
+      //     .then((table) => {
+      //       console.log(table);
+      //     });
+      // }
       await _Reservation
         .create({
           customer: customerId,
