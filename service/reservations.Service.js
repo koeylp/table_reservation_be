@@ -14,15 +14,6 @@ var that = (module.exports = {
     return new Promise(async (resolve, reject) => {
       var depositPrice = tables[0].depositAmount.$numberDecimal;
       console.log(tables[0].depositAmount.$numberDecimal);
-      // for (let { table } of tables) {
-      //   await _Table
-      //     .findOne({
-      //       _id: table._id,
-      //     })
-      //     .then((table) => {
-      //       console.log(table);
-      //     });
-      // }
       await _Reservation
         .create({
           customer: customerId,
