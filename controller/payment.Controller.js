@@ -20,7 +20,7 @@ var that = (module.exports = {
         payment_method: "paypal",
       },
       redirect_urls: {
-        return_url: "http://localhost:7070/payment/success",
+        return_url: "http://localhost:5173/",
         cancel_url: "http://localhost:5173/",
       },
       transactions: [
