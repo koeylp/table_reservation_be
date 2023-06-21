@@ -87,6 +87,7 @@ var that = (module.exports = {
       }
     );
   },
+  handlePaymentFailure: async (req, res) => {
+    res.send("Payment failed");
+  },
 });
-
-// router.get("/failure", paymentService.handlePaymentFailure);

@@ -92,10 +92,7 @@ var that = (module.exports = {
   // );
 // };
 
-// // Service method for handling payment failure callback
-// const handlePaymentFailure = (req, res) => {
-//   res.send("Payment failed");
-// };
+
 
 // module.exports = {
 //   initiatePayment,
