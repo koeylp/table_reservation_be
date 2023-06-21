@@ -13,7 +13,6 @@ var that = (module.exports = {
   addReservation: async ({ customerId, tables, arrivalTime }) => {
     return new Promise(async (resolve, reject) => {
       var depositPrice = tables[0].depositAmount.$numberDecimal;
-      console.log(tables[0].depositAmount.$numberDecimal);
       await _Reservation
         .create({
           customer: customerId,
@@ -21,7 +20,13 @@ var that = (module.exports = {
           depositAmount: depositPrice,
           arrivalTime: arrivalTime,
         })
-        .then((reservation) => resolve(reservation))
+        .then(async (reservation) => {
+          await _Table.findOneAndUpdate(
+            { _id: tables[0]._id },
+            { $set: { isAvailable: false } }
+          );
+          resolve(reservation);
+        })
         .catch((error) =>
           reject(new createError(404, "Cannot Make Reservation"))
         );

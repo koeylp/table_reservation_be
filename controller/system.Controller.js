@@ -15,10 +15,9 @@ var that = (module.exports = {
           maxAge: 30 * 24 * 60 * 60 * 1000,
           httpOnly: true,
           secure: true,
-          sameSite: "strict",
         });
-        return res.status(200).json({
-          token: token,
+        res.status(200).json({
+          token,
         });
       }
     } catch (error) {

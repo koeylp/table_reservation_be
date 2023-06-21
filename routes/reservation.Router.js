@@ -6,11 +6,7 @@ const {
   verifyAccessTokenFromCookie,
 } = require("../config/accessToken");
 
-router.post(
-  "/add",
-  verifyAccessTokenFromCookie,
-  reservationController.addReservaion
-);
+router.post("/add", reservationController.addReservaion);
 router.get(
   "/getAll",
   verifyAccessTokenFromCookie,

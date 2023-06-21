@@ -39,27 +39,32 @@ const verifyAccessToken = (req, res, next) => {
 };
 const verifyAccessTokenFromCookie = (req, res, next) => {
   const { token } = req.cookies;
-  req.payload = token;
+  JWT.verify(token, process.env.SECRET_KEY, (err, payload) => {
+    if (err) {
+      if (err.name === "JsonWebTokenError") {
+        return reject(createError.Unauthorized());
+      }
+      console.log(err);
+      return reject(createError.Unauthorized(err.message));
+    }
+    req.payload = payload;
+  });
   next();
 };
 const verifyAccessTokenCookie = (token) => {
   return new Promise(async (resolve, reject) => {
     console.log(token);
     console.log(process.env.SECRET_KEY);
-    JWT.verify(
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwaG9uZSI6IjAzNDQzNTA3MDgiLCJlbWFpbCI6IlRoZUtob2kxMjNAZnB0LmVkdS52biIsImN1c3RvbWVySWQiOiI2NDhlZDc0NmY1Y2UxYmYzOGM4YzllMjciLCJmdWxsTmFtZSI6IkzDqiBUaOG6vyBLaMO0aSIsImlhdCI6MTY4NzI4MjI3MX0.q9yR_UGFvIDzENIMq43nK8_9xiT4YHyELZIanoyEIMk",
-      process.env.SECRET_KEY,
-      (err, payload) => {
-        if (err) {
-          if (err.name === "JsonWebTokenError") {
-            return reject(createError.Unauthorized());
-          }
-          console.log(err);
-          return reject(createError.Unauthorized(err.message));
+    JWT.verify(token, process.env.SECRET_KEY, (err, payload) => {
+      if (err) {
+        if (err.name === "JsonWebTokenError") {
+          return reject(createError.Unauthorized());
         }
-        resolve(payload);
+        console.log(err);
+        return reject(createError.Unauthorized(err.message));
       }
-    );
+      resolve(payload);
+    });
   });
 };
 module.exports = {
