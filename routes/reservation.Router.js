@@ -12,10 +12,6 @@ router.get(
   verifyAccessTokenFromCookie,
   reservationController.getAllReservation
 );
-router.get(
-  "/",
-  verifyAccessTokenFromCookie,
-  reservationController.getReservationByUser
-);
+router.post("/", reservationController.getReservationByUser);
 
 module.exports = router;

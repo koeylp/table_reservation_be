@@ -43,10 +43,16 @@ var that = (module.exports = {
     }
   },
   getReservationByUser: async (req, res, next) => {
-    const { customerId } = req.payload;
+    const { token } = req.body;
+
+    const payload = await verifyAccessTokenCookie(token);
+
+    const { customerId } = payload;
+
     if (!customerId) throw createError(404, "Customer is required");
     const reservation = await getReservationByUser({ customerId });
     if (reservation) {
+      console.log(reservation);
       return res.status(200).json({
         message: "Your Reservation!",
         reservation: reservation,
