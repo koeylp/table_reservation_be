@@ -23,8 +23,6 @@ var that = (module.exports = {
           if (isvaLid) {
             const token = await generateAccessToken({
               phone: userForLogin.phone,
-              email: userForLogin.email,
-              customerId: userForLogin._id,
               fullName: userForLogin.fullName,
             });
             token
@@ -44,9 +42,7 @@ var that = (module.exports = {
       if (phone === process.env.PHONE && password === process.env.PASSWORD) {
         const token = await generateAccessToken({
           phone: phone,
-          email: "DATHANGNHANH@GMAIL.COM",
-          customerId: password,
-          fullName: "STAFF_RESERVATION",
+          email: process.env.EMAIL,
         });
         token
           ? resolve(token)

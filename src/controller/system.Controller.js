@@ -1,6 +1,6 @@
 const { validateLogin, validateRegister } = require("../config/validate");
 const { login, loginStaff } = require("../service/system.Service");
-const { addUser } = require("../service/user.Service");
+const { addUser, verfyEmail } = require("../service/user.Service");
 const createError = require("http-errors");
 
 var that = (module.exports = {
@@ -11,15 +11,31 @@ var that = (module.exports = {
       const { phone, password } = req.body;
       const token = await login({ phone, password });
       if (token) {
-        res.cookie("token", token, {
+        res.cookie("tokenReservation", token, {
           maxAge: 30 * 24 * 60 * 60 * 1000,
           httpOnly: true,
-          secure: true,
+          secure: false,
+          sameSite: "strict",
         });
         res.status(200).json({
           token,
         });
       }
+    } catch (error) {
+      next(error);
+    }
+  },
+  logout: async (req, res, next) => {
+    try {
+      res.cookie("tokenReservation", "", {
+        expires: new Date(0),
+        httpOnly: true,
+        secure: false,
+        sameSite: "strict",
+      });
+      return res.status(200).json({
+        message: "Logout Successfully! Good BYe!",
+      });
     } catch (error) {
       next(error);
     }
@@ -54,15 +70,29 @@ var that = (module.exports = {
       const { phone, password } = req.body;
       const token = await loginStaff({ phone, password });
       if (token) {
-        res.cookie("token", token, {
+        res.cookie("tokenReservation", token, {
           maxAge: 30 * 24 * 60 * 60 * 1000,
           httpOnly: true,
-          secure: true,
+          secure: false,
           sameSite: "strict",
         });
         return res.status(200).json({
           token: token,
         });
+      }
+    } catch (error) {
+      next(error);
+    }
+  },
+  verfyEmail: async (req, res, next) => {
+    try {
+      const { token } = req.query;
+      if (!token) {
+        throw createError(400, "Bad Request!");
+      }
+      const user = verfyEmail({ token });
+      if (user) {
+        res.redirect("/login");
       }
     } catch (error) {
       next(error);

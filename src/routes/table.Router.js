@@ -4,7 +4,7 @@ const tableController = require("../controller/table.Controller");
 
 router.post("/add", tableController.addTable);
 router.post("/edit", tableController.updateTable);
-router.get("/getAll", tableController.getAllTable);
+router.get("/", tableController.getAllTable);
 router.get("/search", tableController.searchTable);
 router.get("/:tableNumber", tableController.getTableByTableNumber);
 router.get("/getWithCapacity/:capacity", tableController.getWithCapacity);

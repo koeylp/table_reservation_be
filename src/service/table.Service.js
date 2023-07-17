@@ -1,5 +1,20 @@
 const _Table = require("../models/table.Model");
 const createError = require("http-errors");
+const cron = require("node-cron");
+
+cron.schedule("0 0 * * *", async () => {
+  try {
+    const tables = await _Table.find();
+    tables.forEach(async (table) => {
+      table.isAvailable = true;
+      await table.save();
+    });
+    console.log("isAvailable field updated successfully.");
+  } catch (error) {
+    console.error("Error updating isAvailable field:", error);
+  }
+});
+
 var that = (module.exports = {
   addTable: async ({ tableNumber, capacity, depositPrice, timeRangeType }) => {
     return new Promise(async (resolve, reject) => {

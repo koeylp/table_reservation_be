@@ -2,8 +2,8 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const routerMain = require("./routes/main.Router");
-const db = require("./config/dbConfig");
+const routerMain = require("./src/routes/main.Router");
+const db = require("./src/config/dbConfig");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());

@@ -2,19 +2,17 @@ const {
   addReservation,
   getAllReservation,
   getReservationByUser,
+  cancelReservation,
 } = require("../service/reservations.Service");
-const { verifyAccessTokenCookie } = require("../config/accessToken");
 const createError = require("http-errors");
 var that = (module.exports = {
   addReservaion: async (req, res, next) => {
     try {
-      const { token } = req.body;
-      const payload = await verifyAccessTokenCookie(token);
-      const { customerId } = payload;
+      const { phone } = req.payload;
       const { tables, arrivalTime } = req.body;
-      if (customerId && tables && arrivalTime) {
+      if (phone && tables && arrivalTime) {
         const reservation = await addReservation({
-          customerId,
+          phone,
           tables,
           arrivalTime,
         });
@@ -43,20 +41,35 @@ var that = (module.exports = {
     }
   },
   getReservationByUser: async (req, res, next) => {
-    const { token } = req.body;
-
-    const payload = await verifyAccessTokenCookie(token);
-
-    const { customerId } = payload;
-
-    if (!customerId) throw createError(404, "Customer is required");
-    const reservation = await getReservationByUser({ customerId });
-    if (reservation) {
-      console.log(reservation);
-      return res.status(200).json({
-        message: "Your Reservation!",
-        reservation: reservation,
-      });
+    try {
+      const { phone } = req.payload;
+      if (!phone) throw createError(404, "Customer is required");
+      const reservation = await getReservationByUser({ phone });
+      if (reservation) {
+        return res.status(200).json({
+          message: "Your Reservation!",
+          reservation: reservation,
+        });
+      }
+    } catch (error) {
+      next(error);
+    }
+  },
+  cancelReservation: async (req, res, next) => {
+    try {
+      const { reservationId } = req.body;
+      const { phone } = req.payload;
+      if (reservationId) {
+        const reservation = await cancelReservation({ reservationId, phone });
+        if (reservation) {
+          return res.status(200).json({
+            message: "Cancel Reservation Process!",
+            reservation,
+          });
+        }
+      }
+    } catch (error) {
+      next(error);
     }
   },
 });
