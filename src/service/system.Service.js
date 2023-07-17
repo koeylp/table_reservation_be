@@ -40,9 +40,10 @@ var that = (module.exports = {
   loginStaff: async ({ phone, password }) => {
     return new Promise(async (resolve, reject) => {
       if (phone === process.env.PHONE && password === process.env.PASSWORD) {
+        console.log("process.env.EMAIL", process.env.EMAIL);
         const token = await generateAccessToken({
           phone: phone,
-          email: process.env.EMAIL,
+          fullName: process.env.EMAIL,
         });
         token
           ? resolve(token)

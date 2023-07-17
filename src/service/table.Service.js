@@ -26,19 +26,19 @@ var that = (module.exports = {
             tableNumber: tableNumber,
             capacity: capacity,
             depositPrice: depositPrice,
-            timeRangeType: "6h",
+            timeRangeType: "12h",
           },
           {
             tableNumber: tableNumber,
             capacity: capacity,
             depositPrice: depositPrice,
-            timeRangeType: "8h",
+            timeRangeType: "14h",
           },
           {
             tableNumber: tableNumber,
             capacity: capacity,
             depositPrice: depositPrice,
-            timeRangeType: "10h",
+            timeRangeType: "16h",
           },
         ];
         await _Table

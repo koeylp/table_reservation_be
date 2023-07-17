@@ -1,14 +1,22 @@
 const express = require("express");
 const router = express.Router();
 const tableController = require("../controller/table.Controller");
-
-router.post("/add", tableController.addTable);
-router.post("/edit", tableController.updateTable);
-router.get("/", tableController.getAllTable);
+const { verifyAccessTokenCookieAdmin } = require("../config/accessToken");
+router.post("/add", verifyAccessTokenCookieAdmin, tableController.addTable);
+router.post("/edit", verifyAccessTokenCookieAdmin, tableController.updateTable);
+router.get("/", verifyAccessTokenCookieAdmin, tableController.getAllTable);
 router.get("/search", tableController.searchTable);
 router.get("/:tableNumber", tableController.getTableByTableNumber);
-router.get("/getWithCapacity/:capacity", tableController.getWithCapacity);
-router.get("/:timeRange", tableController.getTableByTimeRange);
+router.get(
+  "/getWithCapacity/:capacity",
+  verifyAccessTokenCookieAdmin,
+  tableController.getWithCapacity
+);
+router.get(
+  "/:timeRange",
+  verifyAccessTokenCookieAdmin,
+  tableController.getTableByTimeRange
+);
 router.delete(
   "/enableDisableTable/:tableNumber",
   tableController.enableDisableTable

@@ -70,7 +70,7 @@ var that = (module.exports = {
       const { phone, password } = req.body;
       const token = await loginStaff({ phone, password });
       if (token) {
-        res.cookie("tokenReservation", token, {
+        res.cookie("tokenReservationAdmin", token, {
           maxAge: 30 * 24 * 60 * 60 * 1000,
           httpOnly: true,
           secure: false,
