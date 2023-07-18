@@ -14,8 +14,6 @@ let total = 0;
 var that = (module.exports = {
   initiatePayment: async (req, res) => {
     const { amount, currency, itemName } = req.body;
-    const { tables, arrivalTime } = req.body;
-    const { phone } = req.payload;
     total = amount;
     const paymentData = {
       intent: "sale",
@@ -57,11 +55,13 @@ var that = (module.exports = {
         ).href;
         res.json({ approvalUrl });
         console.log(approvalUrl);
-        addReservation({ phone, tables, arrivalTime });
+        
       }
     });
   },
   handlePaymentSuccess: async (req, res) => {
+    const { tables, arrivalTime } = req.body;
+    const { phone } = req.payload;
     const payerId = req.query.PayerID;
     const paymentId = req.query.paymentId;
 
@@ -76,6 +76,7 @@ var that = (module.exports = {
         },
       ],
     };
+    addReservation({ phone, tables, arrivalTime });
 
     paypal.payment.execute(
       paymentId,
@@ -94,4 +95,3 @@ var that = (module.exports = {
   },
 });
 
-// router.get("/failure", paymentService.handlePaymentFailure);
