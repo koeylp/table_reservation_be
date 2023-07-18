@@ -1,4 +1,3 @@
-const express = require("express");
 const paypal = require("paypal-rest-sdk");
 const { addReservation } = require("../service/reservations.Service");
 
@@ -21,7 +20,7 @@ var that = (module.exports = {
         payment_method: "paypal",
       },
       redirect_urls: {
-        return_url: "http://localhost:5173/",
+        return_url: "http://localhost:7070/success",
         cancel_url: "http://localhost:5173/",
       },
       transactions: [
