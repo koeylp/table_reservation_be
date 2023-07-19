@@ -13,6 +13,9 @@ let total = 0;
 var that = (module.exports = {
   initiatePayment: async (req, res) => {
     const { amount, currency, itemName } = req.body;
+    const { phone } = req.payload;
+    const { tables, arrivalTime } = req.body;
+    console.log("arrivalTime", arrivalTime);
     total = amount;
     const paymentData = {
       intent: "sale",
@@ -20,7 +23,7 @@ var that = (module.exports = {
         payment_method: "paypal",
       },
       redirect_urls: {
-        return_url: "http://localhost:7070/success",
+        return_url: `http://localhost:7070/payment/success`,
         cancel_url: "http://localhost:5173/",
       },
       transactions: [
@@ -40,6 +43,7 @@ var that = (module.exports = {
             total: amount,
           },
           description: "Payment description",
+          custom: JSON.stringify({ phone, tables, arrivalTime }),
         },
       ],
     };
@@ -54,16 +58,12 @@ var that = (module.exports = {
         ).href;
         res.json({ approvalUrl });
         console.log(approvalUrl);
-        
       }
     });
   },
   handlePaymentSuccess: async (req, res) => {
-    const { tables, arrivalTime } = req.body;
-    const { phone } = req.payload;
     const payerId = req.query.PayerID;
     const paymentId = req.query.paymentId;
-
     const execute_payment_json = {
       payer_id: payerId,
       transactions: [
@@ -75,22 +75,46 @@ var that = (module.exports = {
         },
       ],
     };
-    addReservation({ phone, tables, arrivalTime });
 
     paypal.payment.execute(
       paymentId,
       execute_payment_json,
-      function (error, payment) {
+      async function (error, payment) {
         if (error) {
           console.log(error.response);
           throw error;
         } else {
-          console.log(JSON.stringify(payment));
-          console.log("Success");
-          res.send("Success");
+          const dataAdd = JSON.parse(payment.transactions[0].custom);
+          console.log("Phone:", dataAdd.phone);
+          let phone = dataAdd.phone;
+          let tables = dataAdd.tables;
+          let arrivalTime = dataAdd.arrivalTime;
+
+          if (phone && tables) {
+            try {
+              const reservation = await addReservation({
+                phone,
+                tables,
+                arrivalTime,
+              });
+              console.log(reservation);
+              const redirectURL = `http://localhost:5173/orderConfirm?reservation=${encodeURIComponent(
+                JSON.stringify(reservation)
+              )}`;
+              res.redirect(redirectURL);
+            } catch (error) {
+              console.error(error);
+              res
+                .status(500)
+                .json({ error: "An error occurred during reservation." });
+            }
+          } else {
+            res
+              .status(400)
+              .json({ error: "Missing phone or tables information." });
+          }
         }
       }
     );
   },
 });
-

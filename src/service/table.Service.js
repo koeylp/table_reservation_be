@@ -16,7 +16,7 @@ cron.schedule("0 0 * * *", async () => {
 });
 
 var that = (module.exports = {
-  addTable: async ({ tableNumber, capacity, depositPrice, timeRangeType }) => {
+  addTable: async ({ tableNumber, capacity, depositPrice }) => {
     return new Promise(async (resolve, reject) => {
       const listNumberTable = await _Table.find({}).distinct("tableNumber");
       const isTableExist = listNumberTable.includes(tableNumber);

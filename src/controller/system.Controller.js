@@ -92,7 +92,7 @@ var that = (module.exports = {
       }
       const user = verfyEmail({ token });
       if (user) {
-        res.redirect("/login");
+        res.redirect("http://localhost:5173/login");
       }
     } catch (error) {
       next(error);

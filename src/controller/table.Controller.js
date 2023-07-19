@@ -18,12 +18,11 @@ var that = (module.exports = {
     try {
       const { error } = validateTable(req.body);
       if (error) throw createError(error.details[0].message);
-      const { tableNumber, capacity, depositPrice, timeRangeType } = req.body;
+      const { tableNumber, capacity, depositPrice } = req.body;
       const table = await addTable({
         tableNumber,
         capacity,
         depositPrice,
-        timeRangeType,
       });
       if (table) {
         return res.status(200).json({

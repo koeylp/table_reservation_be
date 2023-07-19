@@ -7,7 +7,7 @@ const verfyEmail = async (req, res, next) => {
       return next();
     } else {
       return res.status(404).json({
-        message: "Cannot Login To The System",
+        message: "Your Account Is Not Verify!",
       });
     }
   } catch (error) {

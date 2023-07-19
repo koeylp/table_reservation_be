@@ -17,19 +17,23 @@ var that = (module.exports = {
     return new Promise(async (resolve, reject) => {
       var depositPrice = tables[0].depositAmount.$numberDecimal;
       const tableId = tables[0]._id;
+      let arrivalTimeDefault = arrivalTime;
       const customer = await _User.findOne({ phone: phone });
       const dateTime = Date.now();
       const formattedArrivalTime = new Date(dateTime).toLocaleDateString(
         "en-GB"
       );
       const tableAvailable = await _Table.findOne({ _id: tableId });
+      if (typeof arrivalTime === "undefined") {
+        arrivalTimeDefault = tableAvailable.timeRangeType;
+      }
       if (tableAvailable.isAvailable) {
         await _Reservation
           .create({
             customer: customer._id,
             tables: [{ table: tableId }],
             depositAmount: depositPrice,
-            arrivalTime: formattedArrivalTime + " " + arrivalTime,
+            arrivalTime: formattedArrivalTime + " " + arrivalTimeDefault,
           })
           .then(async (reservation) => {
             await _Table.findOneAndUpdate(
@@ -116,7 +120,7 @@ var that = (module.exports = {
           );
           const mailOptions = {
             from: '"Cancel Reservation" <yummypotsogood@gmail.com>',
-            to: `${customer.email}`,
+            to: `yummypotsogood@gmail.com`,
             subject: " Cancel Reservation Table!",
             html: `<div style="background-color:orange;width: 100%;height: 400px;display: flex;justify-content: center;align-items: center;">
         <div style="width: 50%; background-color: whitesmoke;padding: 10px 30px;">
@@ -125,7 +129,7 @@ var that = (module.exports = {
             <h4>Table Number: ${table.tableNumber}</h4>
             <h4>Time Range: ${table.timeRangeType}</h4>
             <div style="display: flex;justify-content: center;margin-top:30px">
-                <button style="background-color: rgb(255,167,59);border: none;color: whitesmoke;padding: 10px 20px;font-size: 15px;"><a href="http://localhost:9090/" >Take A Look Here...</a></button>
+                <button style="background-color: rgb(255,167,59);border: none;color: whitesmoke;padding: 10px 20px;font-size: 15px;"><a href="http://localhost:9000/" >Take A Look Here...</a></button>
             </div>
             <h4 style="margin-top:30px; font-weight: 300;">If does not work, come back to our Website....
             </h4>
