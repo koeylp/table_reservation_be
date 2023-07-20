@@ -14,8 +14,8 @@ var that = (module.exports = {
   initiatePayment: async (req, res) => {
     const { amount, currency, itemName } = req.body;
     const { phone } = req.payload;
-    const { tables, arrivalTime } = req.body;
-    console.log("arrivalTime", arrivalTime);
+    const { tables, arrivalTime, fullName, phoneReserve } = req.body;
+    console.log(req.body);
     total = amount;
     const paymentData = {
       intent: "sale",
@@ -43,7 +43,13 @@ var that = (module.exports = {
             total: amount,
           },
           description: "Payment description",
-          custom: JSON.stringify({ phone, tables, arrivalTime }),
+          custom: JSON.stringify({
+            phone,
+            tables,
+            arrivalTime,
+            fullName,
+            phoneReserve,
+          }),
         },
       ],
     };
@@ -85,19 +91,22 @@ var that = (module.exports = {
           throw error;
         } else {
           const dataAdd = JSON.parse(payment.transactions[0].custom);
-          console.log("Phone:", dataAdd.phone);
+          console.log(dataAdd);
           let phone = dataAdd.phone;
           let tables = dataAdd.tables;
           let arrivalTime = dataAdd.arrivalTime;
-
-          if (phone && tables) {
+          let fullName = dataAdd.fullName;
+          let phoneReserve = dataAdd.phoneReserve;
+          console.log("Phone:", fullName, phoneReserve);
+          if (phone && tables && fullName && phoneReserve) {
             try {
               const reservation = await addReservation({
                 phone,
                 tables,
                 arrivalTime,
+                fullName,
+                phoneReserve,
               });
-              console.log(reservation);
               const redirectURL = `http://localhost:5173/orderConfirm?reservation=${encodeURIComponent(
                 JSON.stringify(reservation)
               )}`;

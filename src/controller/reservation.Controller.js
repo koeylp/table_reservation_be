@@ -3,18 +3,21 @@ const {
   getAllReservation,
   getReservationByUser,
   cancelReservation,
+  getReservationByTable,
 } = require("../service/reservations.Service");
 const createError = require("http-errors");
 var that = (module.exports = {
   addReservaion: async (req, res, next) => {
     try {
       const { phone } = req.payload;
-      const { tables, arrivalTime } = req.body;
+      const { tables, arrivalTime, fullName, phoneReserve } = req.body;
       if (phone && tables && arrivalTime) {
         const reservation = await addReservation({
           phone,
           tables,
           arrivalTime,
+          fullName,
+          phoneReserve,
         });
         if (reservation) {
           return res.status(200).json({
@@ -64,6 +67,24 @@ var that = (module.exports = {
         if (reservation) {
           return res.status(200).json({
             message: "Cancel Reservation Process!",
+            reservation,
+          });
+        }
+      }
+    } catch (error) {
+      next(error);
+    }
+  },
+  getReservationByTable: async (req, res, next) => {
+    try {
+      const { tableNumber, timeRangeType } = req.query;
+      if (tableNumber && timeRangeType) {
+        const reservation = await getReservationByTable({
+          tableNumber,
+          timeRangeType,
+        });
+        if (reservation) {
+          return res.status(200).json({
             reservation,
           });
         }

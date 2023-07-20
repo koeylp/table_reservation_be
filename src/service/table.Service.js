@@ -45,8 +45,9 @@ var that = (module.exports = {
           .create(tableData)
           .then((table) => resolve(table))
           .catch((error) => reject(new createError(404, "Cannot Add Table!")));
+      } else {
+        reject(new createError(404, "Table Number Is Already Exist!"));
       }
-      reject(new createError(404, "Table Number Is Already Exist!"));
     });
   },
   getAllTable: () => {
@@ -59,60 +60,27 @@ var that = (module.exports = {
   },
   searchTable: async ({ capacity, timeRangeType }) => {
     return new Promise(async (resolve, reject) => {
-      if (
-        typeof capacity === "undefined" &&
-        typeof timeRangeType !== "undefined"
-      ) {
-        await _Table
-          .find({
-            timeRangeType: timeRangeType,
-            isAvailable: true,
-            status: 1,
-          })
-          .then((listTableAvailable) => resolve(listTableAvailable))
-          .catch((error) =>
-            reject(new createError(404, "Cannot Find Table Available!"))
-          );
-      } else if (
-        typeof timeRangeType === "undefined" &&
-        typeof capacity !== "undefined"
-      ) {
-        await _Table
-          .find({
-            capacity: capacity,
-            isAvailable: true,
-            status: 1,
-          })
-          .then((listTableAvailable) => resolve(listTableAvailable))
-          .catch((error) =>
-            reject(new createError(404, "Cannot Find Table Available!"))
-          );
-      } else if (
-        typeof capacity === "undefined" &&
-        typeof timeRangeType === "undefined"
-      ) {
-        await _Table
-          .find({
-            isAvailable: true,
-            status: 1,
-          })
-          .then((listTableAvailable) => resolve(listTableAvailable))
-          .catch((error) =>
-            reject(new createError(404, "Cannot Find Table Available!"))
-          );
-      } else {
-        await _Table
-          .find({
-            capacity: capacity,
-            timeRangeType: timeRangeType,
-            isAvailable: true,
-            status: 1,
-          })
-          .then((listTableAvailable) => resolve(listTableAvailable))
-          .catch((error) =>
-            reject(new createError(404, "Cannot Find Table Available!"))
-          );
+      const checkTimeRangeType =
+        new Date().setHours(Number(16)) - Date.now() < 14 * 60 * 1000;
+      if (checkTimeRangeType) {
+        reject(new createError(404, "Cannot Find Table Out Of Time!"));
       }
+      const query = {
+        isAvailable: true,
+        status: 1,
+      };
+      if (typeof capacity !== "undefined") {
+        query.capacity = capacity;
+      }
+      if (typeof timeRangeType !== "undefined") {
+        query.timeRangeType = timeRangeType;
+      }
+      await _Table
+        .find(query)
+        .then((listTableAvailable) => resolve(listTableAvailable))
+        .catch((error) =>
+          reject(new createError(404, "Cannot Find Table Available"))
+        );
     });
   },
   getTableByTableNumber: async ({ tableNumber }) => {

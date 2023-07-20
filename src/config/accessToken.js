@@ -36,7 +36,6 @@ const verifyAccessTokenCookieAdmin = (req, res, next) => {
               });
             }
           }
-          console.log(payload);
           if (
             payload.phone === "0355350705" &&
             payload.fullName === "DATHANGNHANH@GMAIL.COM"
