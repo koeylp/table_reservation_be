@@ -1,6 +1,6 @@
 const _User = require("../models/user.Model");
 const { generateAccessToken } = require("../config/accessToken");
-const { comparePassword } = require("../config/hasingCode");
+const { comparePassword, hashPassword } = require("../config/hasingCode");
 const createError = require("http-errors");
 require("dotenv").config();
 
@@ -39,8 +39,11 @@ var that = (module.exports = {
   },
   loginStaff: async ({ phone, password }) => {
     return new Promise(async (resolve, reject) => {
-      if (phone === process.env.PHONE && password === process.env.PASSWORD) {
-        console.log("process.env.EMAIL", process.env.EMAIL);
+      const isvaLid = await comparePassword({
+        password,
+        hashpassword: process.env.PASSWORD,
+      });
+      if (phone === process.env.PHONE && isvaLid) {
         const token = await generateAccessToken({
           phone: phone,
           fullName: process.env.EMAIL,

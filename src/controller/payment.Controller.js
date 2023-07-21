@@ -100,7 +100,7 @@ var that = (module.exports = {
           console.log("Phone:", fullName, phoneReserve);
           if (phone && tables && fullName && phoneReserve) {
             try {
-              const reservation = await addReservation({
+              const reservationRespone = await addReservation({
                 phone,
                 tables,
                 arrivalTime,
@@ -108,7 +108,7 @@ var that = (module.exports = {
                 phoneReserve,
               });
               const redirectURL = `http://localhost:5173/orderConfirm?reservation=${encodeURIComponent(
-                JSON.stringify(reservation)
+                JSON.stringify(reservationRespone)
               )}`;
               res.redirect(redirectURL);
             } catch (error) {

@@ -2,7 +2,7 @@ const _Table = require("../models/table.Model");
 const createError = require("http-errors");
 const cron = require("node-cron");
 
-cron.schedule("0 0 * * *", async () => {
+cron.schedule("31 19 * * *", async () => {
   try {
     const tables = await _Table.find();
     tables.forEach(async (table) => {
@@ -69,6 +69,9 @@ var that = (module.exports = {
         isAvailable: true,
         status: 1,
       };
+      if (typeof timeRangeType === "undefined") {
+        reject(new createError(404, "Cannot Find Table With Empty Time..."));
+      }
       if (typeof capacity !== "undefined") {
         query.capacity = capacity;
       }

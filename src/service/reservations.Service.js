@@ -52,7 +52,7 @@ var that = (module.exports = {
               from: '"Reservation SuccessFully!" <yummypotsogood@gmail.com>',
               to: `${customer.email}`,
               subject: "Reservation Table Successfully!",
-              html: `<div style="background-color:orange;width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;">
+              html: `<div style="background-color:#EE4037;width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;">
         <div style="width: 50%; background-color: whitesmoke;padding: 10px 30px;">
             <h1 style="text-align: center;">Notification From YummyPot!</h1>
             <h4 style="margin-top:30px; font-weight: 300; ">Thank For Your Reservation </h4>
@@ -62,7 +62,7 @@ var that = (module.exports = {
             <h4>Book Reservation For: ${fullName}</h4>
             <h4>Phone Number: ${phoneReserve}</h4>
             <div style="display: flex;justify-content: center;margin-top:30px">
-                <button style="background-color: rgb(255,167,59);border: none;color: whitesmoke;padding: 10px 20px;font-size: 15px;"><a href="http://localhost:5173/profile" >Take A Look Here...</a></button>
+                <button style="background-color: #EE4037;border: none;color: whitesmoke;padding: 10px 20px;font-size: 15px;"><a href="http://localhost:5173/profile" >Take A Look Here...</a></button>
             </div>
             <h4 style="margin-top:30px; font-weight: 300;">If does not work, come back to our Website....
             </h4>
@@ -73,7 +73,14 @@ var that = (module.exports = {
             sendMail(mailOptions)
               .then((resule) => console.log("Email Send: ", resule))
               .catch((error) => console.log(error));
-            resolve(reservation);
+            const reservationRespone = await _Reservation
+              .findOne({ _id: reservation._id })
+              .populate("tables.table", {
+                tableNumber: 1,
+                capacity: 1,
+                timeRangeType: 1,
+              });
+            resolve(reservationRespone);
           })
           .catch((error) => {
             console.log(error);
@@ -155,14 +162,14 @@ var that = (module.exports = {
             from: '"Cancel Reservation" <yummypotsogood@gmail.com>',
             to: `yummypotsogood@gmail.com`,
             subject: " Cancel Reservation Table!",
-            html: `<div style="background-color:orange;width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;">
+            html: `<div style="background-color:#EE4037;width: 100%;height: 100%;display: flex;justify-content: center;align-items: center;">
         <div style="width: 50%; background-color: whitesmoke;padding: 10px 30px;">
             <h1 style="text-align: center;">Notification From YummyPot!</h1>
             <h4 style="margin-top:30px; font-weight: 300; ">Customer had cancel their table, Check Out the table Below..... </h4>
             <h4>Table Number: ${table.tableNumber}</h4>
             <h4>Time Range: ${table.timeRangeType}</h4>
             <div style="display: flex;justify-content: center;margin-top:30px">
-                <button style="background-color: rgb(255,167,59);border: none;color: whitesmoke;padding: 10px 20px;font-size: 15px;"><a href="http://localhost:9000/" >Take A Look Here...</a></button>
+                <button style="background-color: #EE4037;border: none;color: whitesmoke;padding: 10px 20px;font-size: 15px;"><a href="http://localhost:9000/" >Take A Look Here...</a></button>
             </div>
             <h4 style="margin-top:30px; font-weight: 300;">If does not work, come back to our Website....
             </h4>
@@ -198,6 +205,7 @@ var that = (module.exports = {
         .find({
           "tables.table": table._id,
           createdAt: { $gte: today },
+          isCancelled: false,
         })
         .select("fullName phone depositAmount arrivalTime isCancelled")
         .then((reservation) => resolve(reservation))
