@@ -7,6 +7,7 @@ const tableSchema = new Schema({
   isAvailable: { type: Boolean, require: true, default: true },
   depositPrice: { type: mongoose.Types.Decimal128, require: true },
   timeRangeType: { type: String, require: true },
+  status: { type: Number, default: 1 },
 });
 
 module.exports = mongoose.model("Tables", tableSchema);

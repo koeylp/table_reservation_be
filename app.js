@@ -2,21 +2,28 @@ const express = require("express");
 const app = express();
 const cookieParser = require("cookie-parser");
 const cors = require("cors");
-const routerMain = require("./routes/main.Router");
-const db = require("./config/dbConfig");
+const routerMain = require("./src/routes/main.Router");
+const db = require("./src/config/dbConfig");
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: ["http://localhost:5173", "http://localhost:9000"],
     credentials: true,
   })
 );
 db.connect();
 routerMain(app);
-
+app.use(function (req, res, next) {
+  res.header("Access-Control-Allow-Origin", req.headers.origin);
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  next();
+});
 app.use((error, req, res, next) => {
   res.status(error.status || 400).send({
     error: {
